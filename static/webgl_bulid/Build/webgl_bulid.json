@@ -1,0 +1,12 @@
+{
+"companyName": "DefaultCompany",
+"productName": "Tappy Plane",
+"dataUrl": "webgl_bulid.data.unityweb",
+"wasmCodeUrl": "webgl_bulid.wasm.code.unityweb",
+"wasmFrameworkUrl": "webgl_bulid.wasm.framework.unityweb",
+"TOTAL_MEMORY": 268435456,
+"graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20"
+}

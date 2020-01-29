@@ -1,0 +1,14 @@
+{% extends "main.html" %}
+
+{% block game %}
+
+                    <h2>{{game.title}}</h2>
+                    <div class="game-info">
+                        Opublikowano : {{game.published}}
+                    </div>
+                    <img src="img/img_1.jpg" class="game-img img-rounded">
+                    <div class="game-intro">
+                        <p>{{game.author}}</p>
+                    </div>
+
+{% endblock %}

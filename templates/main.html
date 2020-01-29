@@ -1,0 +1,90 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <title>Tytuł</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href=" {% static 'css/bootstrap.min.css' %} ">
+    <link rel="stylesheet" type="text/css" href=" {% static 'css/bootstrap-responsive.min.css' %} ">
+    <link rel="stylesheet" type="text/css" href=" {% static 'css/style.css' %} ">
+
+
+</head>
+
+<body>
+
+<div class="container" id="wrapper">
+
+    <div class="row"><!--  PASEK GORA -->
+        <div class="topbar">
+            <div class="logo pull-left">
+                <h1><a href="#"><img src="{% static 'img/poziom.jpg' %}"></a></h1>
+            </div>
+            <div class="topbar-links pull-right">
+                <a href="/accounts/login">Logowanie</a> | <a href="/accounts/create_user">Rejestracja</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row"><!-- Menu -->
+        <div id="mainmenu" class="navbar navbar-inverse">
+                <div class="navbar-inner">
+                    <div>
+                        <a class="brand" href="/games">GRY</a>
+                        <ul class="nav">
+                            <li class="active"><a href="/games">Start</a></li>
+                           <!-- <li><a href="index.html">Artykuły</a></li>
+                            <li><a href="index.html">Kontakt</a></li> -->
+                        </ul>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    <div class="row"><!-- Glowna czesc -->
+
+        <div class="span9"><!-- Lewa kolumna -->
+            <div  class="row latest"><!-- Najnowsze art -->
+
+                {% block featured %}
+
+                {% endblock %}
+
+            </div><!--  Koniec najnowszych art -->
+
+            <div class="row"><!-- Gry lista -->
+
+            {% block game %}
+
+            {% endblock %}
+
+            </div><!--  Koniec listy art -->
+
+        </div><!-- Koniec lewej kolumny -->
+
+        <div class="span3"><!-- Prawa kolumna -->
+            <div class="well sidebar-nav">
+                <ul class="nav nav-list">
+                    <li class="nav-header">Twoje konto</li>
+                    <li class="active"><a href="/accounts/profile">Ustawienia profilu</a></li>
+                    <li><a href="">Powiadomienia</a></li>
+                    <li><a href="/accounts/logout">Wyloguj</a></li>
+                </ul>
+            </div>
+        </div>
+
+       <!-- <div class="span3">
+            <img src="{% static 'img/vert.jpg' %}" alt="">
+        </div>-->
+
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>

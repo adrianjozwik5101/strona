@@ -1,0 +1,249 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+
+    <style>
+
+.game-board {
+    margin:30px auto;
+    position: relative;
+    background: #fff;
+    overflow: hidden;
+    width: 550px;
+    height: 444px;
+    border: 2px solid #ddd;
+}
+
+.game-tile {
+    position: absolute;
+    cursor: pointer;
+    width: 100px;
+    height: 100px;
+    background: #f6da17 url(images/title.png) center center no-repeat;
+}
+
+.game-tile:hover {
+    background-color:#F7C11A;
+}
+
+.game-score {
+    text-align:center;
+}
+
+    </style>
+
+    <meta charset="utf-8">
+    <title>Tytuł</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href=" {% static 'css/bootstrap.min.css' %} ">
+    <link rel="stylesheet" type="text/css" href=" {% static 'css/bootstrap-responsive.min.css' %} ">
+    <link rel="stylesheet" type="text/css" href=" {% static 'css/style.css' %} ">
+
+    <script type="text/javascript">
+
+const memoryGame = {
+    tileCount : 20, //liczba klocków
+    tileOnRow : 5, //liczba klocków na rząd
+    divBoard : null, //div z planszą gry
+    divScore : null, //div z wynikiem gry
+    tiles : [], //tutaj trafi wymieszana tablica klocków
+    tilesChecked : [], //zaznaczone klocki
+    moveCount : 0, //liczba ruchów
+    tilesImg : [ //grafiki dla klocków
+        "{% static 'images/title_1.png' %}",
+        "{% static 'images/title_2.png' %}",
+        "{% static 'images/title_3.png' %}",
+        "{% static 'images/title_4.png' %}",
+        "{% static 'images/title_5.png' %}",
+        "{% static 'images/title_6.png' %}",
+        "{% static 'images/title_7.png' %}",
+        "{% static 'images/title_8.png' %}",
+        "{% static 'images/title_9.png' %}",
+        "{% static 'images/title_10.png' %}"
+    ],
+    canGet : true, //czy można klikać na kafelki
+    tilePairs : 0, //liczba dopasowanych kafelkow
+
+    tileClick(e) {
+        if (this.canGet) {
+            //jeżeli jeszcze nie pobraliśmy 1 elementu
+            //lub jeżeli index tego elementu nie istnieje w pobranych...
+            if (!this.tilesChecked[0] || (this.tilesChecked[0].dataset.index !== e.target.dataset.index)) {
+                this.tilesChecked.push(e.target);
+                e.target.style.backgroundImage = 'url(' + this.tilesImg[e.target.dataset.cardType] + ')';
+            }
+
+            if (this.tilesChecked.length === 2) {
+                this.canGet = false;
+
+                if (this.tilesChecked[0].dataset.cardType === this.tilesChecked[1].dataset.cardType) {
+                    setTimeout(this.deleteTiles.bind(this), 500);
+                } else {
+                    setTimeout(this.resetTiles.bind(this), 500);
+                }
+
+                this.moveCount++;
+                this.divScore.innerText = this.moveCount;
+            }
+        }
+    },
+
+    deleteTiles() {
+        this.tilesChecked[0].remove();
+        this.tilesChecked[1].remove();
+
+        this.canGet = true;
+        this.tilesChecked = [];
+
+        this.tilePairs++;
+        if (this.tilePairs >= this.tileCount / 2) {
+            alert('Udało ci się odgadnąć wszystkie obrazki');
+        }
+    },
+
+    resetTiles() {
+        this.tilesChecked[0].style.backgroundImage = 'url(images/title.png)';
+        this.tilesChecked[1].style.backgroundImage = 'url(images/title.png)';
+
+        this.tilesChecked = [];
+        this.canGet = true;
+    },
+
+    startGame() {
+        //czyścimy planszę
+        this.divBoard = document.querySelector('.game-board');
+        this.divBoard.innerHTML = '';
+
+        //czyścimy planszę z ruchami
+        this.divScore = document.querySelector('.game-score');
+        this.divScore.innerHTML = '';
+
+        //czyścimy zmienne (bo gra może się zacząć ponownie)
+        this.tiles = [];
+        this.tilesChecked = [];
+        this.moveCount = 0;
+        this.canGet = true;
+        this.tilePairs = 0;
+
+        //generujemy tablicę numerów kocków (parami)
+        for (let i=0; i<this.tileCount; i++) {
+            this.tiles.push(Math.floor(i/2));
+        }
+
+        //i ją mieszamy
+        for (let i=this.tileCount-1; i>0; i--) {
+            const swap = Math.floor(Math.random()*i);
+            const tmp = this.tiles[i];
+            this.tiles[i] = this.tiles[swap];
+            this.tiles[swap] = tmp;
+        }
+
+        for (let i=0; i<this.tileCount; i++) {
+            const tile = document.createElement('div');
+            tile.classList.add("game-tile");
+            this.divBoard.appendChild(tile);
+
+            tile.dataset.cardType = this.tiles[i];
+            tile.dataset.index = i;
+
+            tile.style.left = 5 + (tile.offsetWidth+10) * (i%this.tileOnRow) + 'px'
+            tile.style.top = 5 + (tile.offsetHeight+10) * (Math.floor(i/this.tileOnRow)) + 'px';
+
+            tile.addEventListener('click', this.tileClick.bind(this));
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const startBtn = document.querySelector('.game-start');
+    startBtn.addEventListener('click', () => memoryGame.startGame());
+});
+
+</script>
+
+
+</head>
+
+<body>
+
+<div class="container" id="wrapper">
+
+    <div class="row"><!--  PASEK GORA -->
+        <div class="topbar">
+            <div class="logo pull-left">
+                <h1><a href="#"><img src="img/poziom.jpg"></a></h1>
+            </div>
+            <div class="topbar-links pull-right">
+                <a href="/accounts/login">Logowanie</a> | <a href="/accounts/create_user">Rejestracja</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row"><!-- Menu -->
+        <div id="mainmenu" class="navbar navbar-inverse">
+                <div class="navbar-inner">
+                    <div>
+                        <a class="brand" href="/games">CMS</a>
+                        <ul class="nav">
+                            <li class="active"><a href="index.html">Start</a></li>
+                            <li><a href="index.html">Artykuły</a></li>
+                            <li><a href="index.html">Kontakt</a></li>
+                        </ul>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    <div class="row"><!-- Glowna czesc -->
+
+        <div class="span9"><!-- Lewa kolumna -->
+            <div  class="row latest"><!-- Najnowsze art -->
+
+                {% block featured %}
+
+                {% endblock %}
+
+            </div><!--  Koniec najnowszych art -->
+
+            <div class="row"><!-- Gry lista -->
+
+            <div class="game">
+             <div class="game-board">
+             </div>
+
+             <div class="game-score">
+             </div>
+
+           <button class="game-start">Rozpocznij grę</button>
+        </div>
+
+            </div><!--  Koniec listy art -->
+
+        </div><!-- Koniec lewej kolumny -->
+
+        <div class="span3"><!-- Prawa kolumna -->
+            <div class="well sidebar-nav">
+                <ul class="nav nav-list">
+                    <li class="nav-header">Twoje konto</li>
+                    <li class="active"><a href="">Ustawienia profilu</a></li>
+                    <li><a href="">Powiadomienia</a></li>
+                    <li><a href="/accounts/logout">Wyloguj</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="span3"><!-- Prawa kolumna -->
+            <img src="{% static 'img/vert.jpg' %}" alt="">
+        </div>
+
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>
